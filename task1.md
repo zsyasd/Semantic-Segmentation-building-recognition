@@ -14,7 +14,7 @@ task1仅仅是作为一个简单介绍。关于赛题阅读和评价方法。同
 
 如下图，左边为原始航拍图，右边为对应的建筑物标注。
 
-![](./img/data-example.png)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/data-example.png)
 
 赛题数据来源（Inria Aerial Image Labeling），并进行拆分处理。数据集报名后可见并可下载。赛题数据为航拍图，需要参赛选手识别图片中的地表建筑具体像素位置。
 ### 1.3 数据标签
