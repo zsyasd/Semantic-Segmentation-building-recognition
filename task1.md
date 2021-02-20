@@ -389,3 +389,27 @@ for i in tqdm(range(l)):
     ratio_ls.append(ratio)
 pd.Series(ratio_ls).to_csv("ratio_ls")
 ```
+### 统计所有图片中建筑物区域平均区域大小
+```python
+import pandas as pd
+import numpy as np
+from PIL import Image
+from tqdm import tqdm
+
+train_mask = pd.read_csv("数据集/train_mask.csv",sep="\t",names=["name","mask"])
+train_mask["mask"]=train_mask["mask"].fillna("")
+l = len(train_mask)
+
+sum_ls = []
+for i in tqdm(range(l)):
+    if train_mask["mask"].iloc[i]!="":
+        ls = list(map(int,train_mask["mask"].iloc[i].split(" ")))
+        number = sum(ls[1::2])
+        # pic_path = "数据集/"+"train/"+train_mask["name"].iloc[i]
+        # img = np.array(Image.open(pic_path))
+        # ratio = number/(img.shape[0]*img.shape[1])
+    else:
+        number = 0
+    sum_ls.append(number)
+pd.Series(sum_ls).to_csv("point_sum_ls")
+```
