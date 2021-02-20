@@ -351,8 +351,11 @@ plt.imshow(cv2.imread('test_a/' + subm[0].iloc[0]));
 分别是第一张 第二张 第三张 和第25张的预测。
 
 最终提交结果是0.7706
+
 <img width="350" alt="image" src="https://user-images.githubusercontent.com/55370336/108603762-c5035600-73e4-11eb-971b-22c03edf1769.png">
+
 <img width="683" alt="image" src="https://user-images.githubusercontent.com/55370336/108603769-d2b8db80-73e4-11eb-9d92-a9a668087e21.png">
+
 毕竟只是瞎几把挑的。后续估计还能有进步。
 
 ## 3 课后作业
