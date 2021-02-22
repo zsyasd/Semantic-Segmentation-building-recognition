@@ -151,7 +151,7 @@ plt.imshow(augments['image'])
 plt.subplot(1, 2, 2)
 plt.imshow(augments['mask'])aug
 ```
-![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-5.png)
+![image](https://user-images.githubusercontent.com/55370336/108733387-6f0beb00-7569-11eb-8bfe-c37a02057f2e.png)
 
 这里我是查看了第5张图片第情况，注意如果你是想查看第二张图片情况的话会报错。查看训练集数据会发现
 
@@ -268,4 +268,103 @@ plt.imshow(romask)
 
 ![image](https://user-images.githubusercontent.com/55370336/108715731-344c8780-7556-11eb-9178-79bc4d93c18b.png)
 
+#### albumentations做组合变换
 
+变换不仅可以单独使用，还可以将这些组合起来，这就需要用到 `Compose` 类，该类继承自 `BaseCompose`。`Compose` 类含有以下参数：
+
+* `transforms`：转换类的数组，`list`类型
+* `bbox_params`：用于 `bounding boxes` 转换的参数，`BboxPoarams` 类型
+* `keypoint_params`：用于 `keypoints` 转换的参数， `KeypointParams` 类型
+* `additional_targets`：`key`新`target` 名字，`value` 为旧 `target` 名字的 `dict`，如 `{'image2': 'image'}`，`dict` 类型
+* `p`：使用这些变换的概率，默认值为 1.0
+
+```python
+# 使用albumentations其他的的操作完成扩增操作；
+image3 = Compose([
+        # 对比度受限直方图均衡
+            #（Contrast Limited Adaptive Histogram Equalization）
+        CLAHE(),
+        # 随机旋转 90°
+        RandomRotate90(),
+        # 转置
+        Transpose(),
+        # 随机仿射变换
+        ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.50, rotate_limit=45, p=.75),
+        # 模糊
+        Blur(blur_limit=3),
+        # 光学畸变
+        OpticalDistortion(),
+        # 网格畸变
+        GridDistortion(),
+        # 随机改变图片的 HUE、饱和度和值
+        HueSaturationValue()
+    ], p=1.0)
+
+augments = image3(image=img, mask=mask)
+img_aug, mask_aug = augments['image'], augments['mask']
+
+plt.figure(figsize=(16, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(augments['image'])
+
+plt.subplot(1, 2, 2)
+plt.imshow(augments['mask'])
+```
+
+多次运行结果会不一样
+![image](https://user-images.githubusercontent.com/55370336/108734871-dbd3b500-756a-11eb-819c-31f4e6bfe4da.png)
+![image](https://user-images.githubusercontent.com/55370336/108734904-e68e4a00-756a-11eb-914e-881bd618ccec.png)
+
+#### 组合与随机选择（Compose & OneOf）
+
+使用上面的组合方式，执行的过程中会把每个在 transforms 中的转换都执行一遍，但有时候可能我们执行某一组类似操作中的一个，那么这时候就可以配合 OneOf 类来实现此功能。OneOf 类含有以下是参数：
+
+transforms：转换类的列表
+p：使转换方法的概率，默认值为 0.5
+
+```python
+image4 = Compose([
+        RandomRotate90(),
+        # 翻转
+        Flip(),
+        Transpose(),
+        OneOf([
+            # 高斯噪点
+            IAAAdditiveGaussianNoise(),
+            GaussNoise(),
+        ], p=0.2),
+        OneOf([
+            # 模糊相关操作
+            MotionBlur(p=.2),
+            MedianBlur(blur_limit=3, p=0.1),
+            Blur(blur_limit=3, p=0.1),
+        ], p=0.2),
+        ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.2, rotate_limit=45, p=0.2),
+        OneOf([
+            # 畸变相关操作
+            OpticalDistortion(p=0.3),
+            GridDistortion(p=.1),
+            IAAPiecewiseAffine(p=0.3),
+        ], p=0.2),
+        OneOf([
+            # 锐化、浮雕等操作
+            CLAHE(clip_limit=2),
+            IAASharpen(),
+            IAAEmboss(),
+            RandomBrightnessContrast(),            
+        ], p=0.3),
+        HueSaturationValue(p=0.3),
+    ], p=1.0)
+
+augments = image4(image=img, mask=mask)
+img_aug, mask_aug = augments['image'], augments['mask']
+
+plt.figure(figsize=(16, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(augments['image'])
+
+plt.subplot(1, 2, 2)
+plt.imshow(augments['mask'])
+```
+
+![image](https://user-images.githubusercontent.com/55370336/108735701-d2971800-756b-11eb-850f-0d6af213ffef.png)
