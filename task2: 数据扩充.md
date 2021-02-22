@@ -25,16 +25,13 @@
 而对于语义分割而言，常规的数据扩增方法都会改变图像的标签。如水平翻转、垂直翻转、旋转90%、旋转和随机裁剪，这些常见的数据扩增方法都会改变图像的标签，即会导致地标建筑物的像素发生改变。
 ```
 
-![](img/albu-example.jpeg)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/albu-example.jpeg)
 
 那么对于cv的常用的数据扩充方法，还得是我 ~~或人~~ 不是，是OpenCV和albumentations。
 
 ### OpenCV
 
 OpenCV可以很方便的完成数据读取、图像变化、边缘检测和模式识别等任务。为了加深各位对数据可做的影响，这里介绍OpenCV完成数据扩增的操作。
-
-![](img/opencv.png)
-
 
 ```python
 # 首先读取原始图片
@@ -49,7 +46,7 @@ plt.subplot(1, 2, 2)
 plt.imshow(mask)
 ```
 
-![](img/aug-1.png)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-1.png)
 
 ```python
 # 垂直翻转
@@ -60,7 +57,7 @@ plt.imshow(cv2.flip(img, 0))
 plt.subplot(1, 2, 2)
 plt.imshow(cv2.flip(mask, 0))
 ```
-![](img/aug-2.png)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-2.png)
 
 ```python
 # 水平翻转
@@ -71,7 +68,8 @@ plt.imshow(cv2.flip(img, 0))
 plt.subplot(1, 2, 2)
 plt.imshow(cv2.flip(mask, 0))
 ```
-![](img/aug-3.png)
+
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-3.png)
 
 ```python
 # 随机裁剪
@@ -84,7 +82,7 @@ plt.imshow(img[x:x+256, y:y+256])
 plt.subplot(1, 2, 2)
 plt.imshow(mask[x:x+256, y:y+256])
 ```
-![](img/aug-4.png)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-4.png)
 
 ### albumentations数据扩增
 
@@ -103,7 +101,7 @@ albumentations也是计算机视觉数据竞赛中最常用的库：
 
 albumentations它可以对数据集进行逐像素的转换，如模糊、下采样、高斯造点、高斯模糊、动态模糊、RGB转换、随机雾化等；也可以进行空间转换（同时也会对目标进行转换），如裁剪、翻转、随机裁剪等。
 
-```
+```python
 import albumentations as A
 
 # 水平翻转
@@ -121,7 +119,7 @@ img_aug, mask_aug = augments['image'], augments['mask']
 
 albumentations还可以组合多个数据扩增操作得到更加复杂的数据扩增操作：
 
-```
+```python
 trfm = A.Compose([
     A.Resize(256, 256),
     A.HorizontalFlip(p=0.5),
@@ -138,4 +136,4 @@ plt.imshow(augments['image'])
 plt.subplot(1, 2, 2)
 plt.imshow(augments['mask'])aug
 ```
-![](img/aug-5.png)
+![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-5.png)
