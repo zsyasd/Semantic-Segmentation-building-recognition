@@ -81,7 +81,7 @@ plt.imshow(cv2.flip(img, -1))
 plt.subplot(1, 2, 2)
 plt.imshow(cv2.flip(mask, -1))
 ```
-![image](https://user-images.githubusercontent.com/55370336/108657250-23bff100-7505-11eb-808a-c962eda21751.png)
+![image](https://user-images.githubusercontent.com/55370336/108733188-39ff9880-7569-11eb-985a-24c1ebcb73de.png)
 
 ```python
 # 随机裁剪
