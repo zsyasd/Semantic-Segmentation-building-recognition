@@ -46,7 +46,7 @@ plt.subplot(1, 2, 2)
 plt.imshow(mask)
 ```
 
-![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-1.png)
+![](https://user-images.githubusercontent.com/55370336/108654523-d2633200-7503-11eb-9142-d4f930148e02.png)
 
 ```python
 # 垂直翻转
@@ -57,7 +57,8 @@ plt.imshow(cv2.flip(img, 0))
 plt.subplot(1, 2, 2)
 plt.imshow(cv2.flip(mask, 0))
 ```
-![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-2.png)
+![image](https://user-images.githubusercontent.com/55370336/108654876-89f84400-7504-11eb-9420-5b85d1c2ad06.png)
+
 
 ```python
 # 水平翻转
@@ -69,7 +70,18 @@ plt.subplot(1, 2, 2)
 plt.imshow(cv2.flip(mask, 0))
 ```
 
-![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-3.png)
+![](https://user-images.githubusercontent.com/55370336/108654547-dee78a80-7503-11eb-9d1d-ec07d8d55c0b.png)
+
+```python
+# 负水平翻转
+plt.figure(figsize=(16, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(cv2.flip(img, -1))
+
+plt.subplot(1, 2, 2)
+plt.imshow(cv2.flip(mask, -1))
+```
+![image](https://user-images.githubusercontent.com/55370336/108657250-23bff100-7505-11eb-808a-c962eda21751.png)
 
 ```python
 # 随机裁剪
@@ -82,7 +94,10 @@ plt.imshow(img[x:x+256, y:y+256])
 plt.subplot(1, 2, 2)
 plt.imshow(mask[x:x+256, y:y+256])
 ```
-![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-4.png)
+![image](https://user-images.githubusercontent.com/55370336/108655646-bf049680-7504-11eb-9e73-c5ca76c874fb.png)
+![image](https://user-images.githubusercontent.com/55370336/108655823-c9269500-7504-11eb-9577-7e5a9022613a.png)
+
+随机剪裁每次提交都不一样的哦
 
 ### 2.2 albumentations数据扩增
 
