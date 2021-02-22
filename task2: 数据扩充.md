@@ -29,7 +29,7 @@
 
 那么对于cv的常用的数据扩充方法，还得是我 ~~或人~~ 不是，是OpenCV和albumentations。
 
-### OpenCV
+### 2.1 OpenCV
 
 OpenCV可以很方便的完成数据读取、图像变化、边缘检测和模式识别等任务。为了加深各位对数据可做的影响，这里介绍OpenCV完成数据扩增的操作。
 
@@ -84,7 +84,7 @@ plt.imshow(mask[x:x+256, y:y+256])
 ```
 ![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-4.png)
 
-### albumentations数据扩增
+### 2.2 albumentations数据扩增
 
 albumentations是基于OpenCV的快速训练数据增强库，拥有非常简单且强大的可以用于多种任务（分割、检测）的接口，易于定制且添加其他框架非常方便。
 
@@ -137,3 +137,55 @@ plt.subplot(1, 2, 2)
 plt.imshow(augments['mask'])aug
 ```
 ![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-5.png)
+
+### 2.3 Pytorch数据读取
+
+- Dataset：数据集，对数据进行读取并进行数据扩增；
+- DataLoder：数据读取器，对Dataset进行封装并进行批量读取；
+
+定义Dataset：
+
+```python
+import torch.utils.data as D
+class TianChiDataset(D.Dataset):
+    def __init__(self, paths, rles, transform):
+        self.paths = paths
+        self.rles = rles
+        self.transform = transform
+        self.len = len(paths)
+
+    def __getitem__(self, index):
+        img = cv2.imread(self.paths[index])
+        mask = rle_decode(self.rles[index])
+        augments = self.transform(image=img, mask=mask)
+        return self.as_tensor(augments['image']), augments['mask'][None]
+   
+    def __len__(self):
+        return self.len
+```
+
+实例化Dataset：
+
+```python
+trfm = A.Compose([
+    A.Resize(IMAGE_SIZE, IMAGE_SIZE),
+    A.HorizontalFlip(p=0.5),
+    A.VerticalFlip(p=0.5),
+    A.RandomRotate90(),
+])
+
+dataset = TianChiDataset(
+    train_mask['name'].values,
+    train_mask['mask'].fillna('').values,
+    trfm
+)
+```
+
+实例化DataLoder，批大小为10：
+
+```python
+loader = D.DataLoader(
+    dataset, batch_size=10, shuffle=True, num_workers=0)
+```
+
+### 2.4 课后作业
