@@ -49,7 +49,7 @@ plt.imshow(mask)
 ![](https://user-images.githubusercontent.com/55370336/108654523-d2633200-7503-11eb-9142-d4f930148e02.png)
 
 ```python
-# 垂直翻转
+# 水平翻转
 plt.figure(figsize=(16, 8))
 plt.subplot(1, 2, 1)
 plt.imshow(cv2.flip(img, 0))
@@ -61,7 +61,7 @@ plt.imshow(cv2.flip(mask, 0))
 
 
 ```python
-# 水平翻转
+# 垂直翻转
 plt.figure(figsize=(16, 8))
 plt.subplot(1, 2, 1)
 plt.imshow(cv2.flip(img, 0))
