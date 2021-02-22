@@ -153,6 +153,15 @@ plt.imshow(augments['mask'])aug
 ```
 ![](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/aug-5.png)
 
+这里我是查看了第5张图片第情况，注意如果你是想查看第二张图片情况的话会报错。查看训练集数据会发现
+
+```python
+train_mask
+```
+![image](https://user-images.githubusercontent.com/55370336/108683261-592c0500-752c-11eb-9d0c-e955c68c3a83.png)
+
+说明如果当该图中没有建筑物的话，是没办法查看的。
+
 ### 2.3 Pytorch数据读取
 
 - Dataset：数据集，对数据进行读取并进行数据扩增；
@@ -204,3 +213,59 @@ loader = D.DataLoader(
 ```
 
 ### 2.4 课后作业
+```python
+# 使用OpenCV完成图像加噪数据扩增
+def addGaussianNoise(image,percetage): 
+    G_Noiseimg = image.copy()
+    w = image.shape[1]
+    h = image.shape[0]
+    G_NoiseNum=int(percetage*image.shape[0]*image.shape[1]) 
+    for i in range(G_NoiseNum): 
+        temp_x = np.random.randint(0,h) 
+        temp_y = np.random.randint(0,w) 
+        G_Noiseimg[temp_x][temp_y][np.random.randint(3)] = np.random.randn(1)[0] 
+    return G_Noiseimg
+
+Gimg = addGaussianNoise(img, 0.5)
+
+plt.figure(figsize=(16, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(Gimg)
+
+plt.subplot(1, 2, 2)
+plt.imshow(mask)
+```
+
+![image](https://user-images.githubusercontent.com/55370336/108714831-061a7800-7555-11eb-8787-99ea377f3347.png)
+
+当然你也可以把precetage挑大一点，上面这张图是0.5的，下面放张1的
+或者你也可以自己挑一下方差和期望
+
+![image](https://user-images.githubusercontent.com/55370336/108715341-b5efe580-7555-11eb-9b26-3b24c978212e.png)
+
+```python
+# 使用OpenCV完成图像旋转数据扩增
+def rotate(image, angle=15, scale=0.9):
+    # 角度可以自己调
+    w = image.shape[1]
+    h = image.shape[0]
+    #rotate matrix
+    M = cv2.getRotationMatrix2D((w/2,h/2), angle, scale)
+    #rotate
+    image = cv2.warpAffine(image,M,(w,h))
+    return image
+    
+roimg = rotate(img)
+romask = rotate(mask)
+
+plt.figure(figsize=(16, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(roimg)
+
+plt.subplot(1, 2, 2)
+plt.imshow(romask)
+```
+
+![image](https://user-images.githubusercontent.com/55370336/108715731-344c8780-7556-11eb-9178-79bc4d93c18b.png)
+
+
