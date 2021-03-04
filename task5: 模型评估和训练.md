@@ -30,3 +30,120 @@
 训练集误差和交叉验证集误差近似时：high bias/underfitting 交叉验证集误差远大于训练集误差时：high varience/overfitting。
 
 ![](http://www.ai-start.com/ml2014/images/25597f0f88208a7e74a3ca028e971852.png)
+
+在给定赛题后，赛题方会给定训练集和测试集两部分数据。参赛者需要在训练集上面构建模型，并在测试集上面验证模型的泛化能力。因此参赛者可以通过提交模型对测试集的预测结果，来验证自己模型的泛化能力。同时参赛方也会限制一些提交的次数限制，以此避免参赛选手“刷分”。
+
+在一般情况下，参赛选手也可以自己在本地划分出一个验证集出来，进行本地验证。训练集、验证集和测试集分别有不同的作用：
+- #### 训练集（Train Set）：模型用于训练和调整模型参数；
+- #### 验证集（Validation Set）：用来验证模型精度和调整模型超参数；
+- #### 测试集（Test Set）：验证模型的泛化能力。
+
+因为训练集和验证集是分开的，所以模型在验证集上面的精度在一定程度上可以反映模型的泛化能力。在划分验证集的时候，需要注意验证集的分布应该与测试集尽量保持一致，不然模型在验证集上的精度就失去了指导意义。 
+
+既然验证集这么重要，那么如何划分本地验证集呢。在一些比赛中，赛题方会给定验证集；如果赛题方没有给定验证集，那么参赛选手就需要从训练集中拆分一部分得到验证集。验证集的划分有如下几种方式：
+
+![IMG](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/%E9%AA%8C%E8%AF%81%E9%9B%86%E6%9E%84%E9%80%A0.png)   
+
+#### 留出法（Hold-Out）
+直接将训练集划分成两部分，新的训练集和验证集。这种划分方式的优点是最为直接简单；缺点是只得到了一份验证集，有可能导致模型在验证集上过拟合。留出法应用场景是数据量比较大的情况。 
+
+#### 交叉验证法（Cross Validation，CV）
+将训练集划分成K份，将其中的K-1份作为训练集，剩余的1份作为验证集，循环K训练。这种划分方式是所有的训练集都是验证集，最终模型验证精度是K份平均得到。这种方式的优点是验证集精度比较可靠，训练K次可以得到K个有多样性差异的模型；CV验证的缺点是需要训练K次，不适合数据量很大的情况。 
+
+#### 自助采样法（BootStrap）
+通过有放回的采样方式得到新的训练集和验证集，每次的训练集和验证集都是有区别的。这种划分方式一般适用于数据量较小的情况。
+
+
+在本次赛题中已经划分为验证集，因此选手可以直接使用训练集进行训练，并使用验证集进行验证精度（当然你也可以合并训练集和验证集，自行划分验证集）。   
+
+当然这些划分方法是从数据划分方式的角度来讲的，在现有的数据比赛中一般采用的划分方法是留出法和交叉验证法。如果数据量比较大，留出法还是比较合适的。当然任何的验证集的划分得到的验证集都是要保证训练集-验证集-测试集的分布是一致的，所以如果不管划分何种的划分方式都是需要注意的。
+
+这里的分布一般指的是与标签相关的统计分布，比如在分类任务中“分布”指的是标签的类别分布，训练集-验证集-测试集的类别分布情况应该大体一致；如果标签是带有时序信息，则验证集和测试集的时间间隔应该保持一致。
+
+### 5.2 模型训练与验证
+在本节我们目标使用Pytorch来完成CNN的训练和验证过程，CNN网络结构与之前的章节中保持一致。我们需要完成的逻辑结构如下：   
+- 构造训练集和验证集；
+- 每轮进行训练和验证，并根据最优验证集精度保存模型。 
+
+```python
+train_loader = torch.utils.data.DataLoader(
+  train_dataset,
+  batch_size=10, 
+  shuffle=True, 
+  num_workers=10, 
+)
+
+val_loader = torch.utils.data.DataLoader(
+  val_dataset,
+  batch_size=10, 
+  shuffle=False, 
+  num_workers=10, 
+)
+
+model = Model1()
+criterion = nn.CrossEntropyLoss(size_average=False)
+optimizer = torch.optim.Adam(model.parameters(), 0.001)
+best_loss = 1000.0
+for epoch in range(20):
+print('Epoch: ', epoch)
+
+train(train_loader, model, criterion, optimizer, epoch)
+val_loss = validate(val_loader, model, criterion)
+
+# 记录下验证集精度
+if val_loss < best_loss:
+    best_loss = val_loss
+    torch.save(model.state_dict(), './model.pt')
+```
+
+其中每个Epoch的训练代码如下： 
+```python
+def train(train_loader, model, criterion, optimizer, epoch):
+    # 切换模型为训练模式
+    model.train()
+
+    for i, (input, target) in enumerate(train_loader):
+      # 正向传播
+      # 计算损失
+      # 反向传播
+      pass
+```
+
+其中每个Epoch的验证代码如下：
+```python 
+def validate(val_loader, model, criterion):
+    # 切换模型为预测模型
+    model.eval()
+    val_loss = []
+
+    # 不记录模型梯度信息
+    with torch.no_grad():
+        for i, (input, target) in enumerate(val_loader):
+            # 正向传播
+            # 计算损失
+            pass
+```
+
+### 5.3 模型保存与加载
+在Pytorch中模型的保存和加载非常简单，比较常见的做法是保存和加载模型参数： 
+``` torch.save(model_object.state_dict(), 'model.pt') ``` 
+
+```model.load_state_dict(torch.load(' model.pt')) ``` 
+
+### 5.4 模型调参流程 
+深度学习原理少但实践性非常强，基本上很多的模型的验证只能通过训练来完成。同时深度学习有众多的网络结构和超参数，因此需要反复尝试。训练深度学习模型需要GPU的硬件支持，也需要较多的训练时间，如何有效的训练深度学习模型逐渐成为了一门学问。
+
+深度学习有众多的训练技巧，比较推荐的阅读链接有：   
+- http://lamda.nju.edu.cn/weixs/project/CNNTricks/CNNTricks.html
+- http://karpathy.github.io/2019/04/25/recipe/
+
+本节挑选了常见的一些技巧来讲解，并针对本次赛题进行具体分析。与传统的机器学习模型不同，深度学习模型的精度与模型的复杂度、数据量、正则化、数据扩增等因素直接相关。所以当深度学习模型处于不同的阶段（欠拟合、过拟合和完美拟合）的情况下，大家可以知道可以什么角度来继续优化模型。
+
+在参加本次比赛的过程中，我建议大家以如下逻辑完成：  
+
+- 初步构建简单的CNN模型，不用特别复杂，跑通训练、验证和预测的流程；
+- 简单CNN模型的损失会比较大，尝试增加模型复杂度，并观察验证集精度； 
+- 在增加模型复杂度的同时增加数据扩增方法，直至验证集精度不变。
+
+![IMG](https://github.com/datawhalechina/team-learning-cv/blob/master/AerialImageSegmentation/img/%E8%B0%83%E5%8F%82%E6%B5%81%E7%A8%8B.png)
+
