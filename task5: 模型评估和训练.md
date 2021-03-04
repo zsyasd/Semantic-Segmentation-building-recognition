@@ -90,15 +90,15 @@ criterion = nn.CrossEntropyLoss(size_average=False)
 optimizer = torch.optim.Adam(model.parameters(), 0.001)
 best_loss = 0.106 #还是自己看着办，当然也可以每一轮都验证然后保留
 for epoch in range(20):
-print('Epoch: ', epoch)
+  print('Epoch: ', epoch)
 
-train(train_loader, model, criterion, optimizer, epoch)
-val_loss = validate(val_loader, model, criterion)
+  train(train_loader, model, criterion, optimizer, epoch)
+  val_loss = validate(val_loader, model, criterion)
 
-# 记录下验证集精度
-if val_loss < best_loss: #这个可以写进for循环里面，每一次训练都查看是否需要保留
-    best_loss = val_loss #其实我觉得每次都查看会好一点，你可以随时停掉训练
-    torch.save(model.state_dict(), './model.pt')
+  # 记录下验证集精度
+  if val_loss < best_loss: #写进for循环里面，每一次训练都查看是否需要保留
+      best_loss = val_loss #其实我觉得每次都查看会好一点，你可以随时停掉训练
+      torch.save(model.state_dict(), './model.pt')
 ```
 
 其中每个Epoch的训练代码如下： 
