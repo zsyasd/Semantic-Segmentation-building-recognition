@@ -23,7 +23,7 @@
 由于深度学习模型一般需要较长的训练周期，如果硬件设备不允许建议选取留出法，如果需要追求精度可以使用交叉验证的方法。
 
 下面假设构建了10折交叉验证，训练得到10个语义分割模型。
-![IMG](img/交叉验证.png)
+![IMG](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81.png)
 
 那么在10个CNN模型可以使用如下方式进行集成：
 
