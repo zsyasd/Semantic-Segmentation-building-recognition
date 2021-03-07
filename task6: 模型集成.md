@@ -69,11 +69,12 @@ for idx, name in enumerate(tqdm_notebook(glob.glob('./test_mask/*.png')[:])):
 本章的开头已经提到，假设我们训练了10个CNN则可以将多个模型的预测结果进行平均。但是加入只训练了一个CNN模型，如何做模型集成呢?
 
 在论文Snapshot Ensembles中，作者提出使用cyclical learning rate进行训练模型，并保存精度比较好的一些checkopint，最后将多个checkpoint进行模型集成。
-![IMG](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/Snapshot.png)
+
+![](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/Snapshot.png)
           
 由于在cyclical learning rate中学习率的变化有周期性变大和减少的行为，因此CNN模型很有可能在跳出局部最优进入另一个局部最优。在Snapshot论文中作者通过使用表明，此种方法可以在一定程度上提高模型精度，但需要更长的训练时间。
 
-![IMG]https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/%E5%AF%B9%E6%AF%94.png)    
+![IMG](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/%E5%AF%B9%E6%AF%94.png)    
 
 ### 6.3 小结
 
