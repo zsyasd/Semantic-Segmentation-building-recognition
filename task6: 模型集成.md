@@ -72,6 +72,7 @@ for idx, name in enumerate(tqdm_notebook(glob.glob('./test_mask/*.png')[:])):
 ![IMG](https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/Snapshot.png)
           
 由于在cyclical learning rate中学习率的变化有周期性变大和减少的行为，因此CNN模型很有可能在跳出局部最优进入另一个局部最优。在Snapshot论文中作者通过使用表明，此种方法可以在一定程度上提高模型精度，但需要更长的训练时间。
+
 ![IMG]https://github.com/datawhalechina/team-learning-cv/raw/master/AerialImageSegmentation/img/%E5%AF%B9%E6%AF%94.png)    
 
 ### 6.3 小结
